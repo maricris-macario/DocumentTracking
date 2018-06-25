@@ -1,0 +1,114 @@
+            @font-face{
+                font-family: StencilCargoArmy;
+                src: url('../fonts/StencilCargoArmy.ttf');
+                }
+
+            @font-face{
+                font-family: timeburnerbold;
+                src: url('../fonts/timeburnerbold.ttf');
+            }
+                
+                /*.formcontainer{
+                	display: grid;
+                	grid-template-columns: auto auto auto auto;
+                	grid-gap: 3px;
+                	padding: 15px;
+
+                }
+                
+                .formcontainer > div{
+                	background-color: saddlebrown;
+                	padding: 50px 55px;
+                	margin-left: 60%;
+                }*/
+
+                div.gallery {
+                    margin: 5px;
+                    float: left;
+                    width: 180px;
+                    margin-left: 290px;
+                }
+
+
+                div.gallery img {
+                    width: 100%;
+                    height: auto;
+                    margin-left: 3px;
+                    width: 160%;
+
+                }
+                /*.formcontainer2{
+                    display: grid;
+                    /*grid-template-columns: 40% 40% 40% 40%;*/
+                    /*grid-gap: 9px;*/
+                    /*padding: 20px;
+                    align-items: : center;
+                }
+
+                .formcontainer2 > div{
+                    background-color: powderblue;
+                    padding: 96px 70px;
+                    margin-left: 30%;
+                }*/
+
+                img.logo{
+                    height: 270px;
+                    /*float: left;*/
+                }
+
+                h1.h1l{
+                    font-family: StencilCargoArmy;
+                    color:black;
+                    margin-top: 40px;
+                    margin-left: 86px;
+                }
+
+                h1.h1ll{
+                    font-family: timeburnerbold;
+                    color:black;
+                    margin-top: 40px;
+                    margin-left: 86px;
+                }
+
+                h1.h1ll2{
+                    font-family: timeburnerbold;
+                    color:white;
+                    margin-top: 40px;
+                }
+
+                .h1ll22{
+                    font-family: timeburnerbold;
+                    color:white;
+                    font-size: 40px;
+                }
+
+                .h1ll222{
+                    font-family: timeburnerbold;
+                    color:black;
+                    font-size: 20px;
+                }
+
+                h5.PMA{
+                    font-family: StencilCargoArmy;
+                    font-size: 50px;
+                    color: black;
+                }
+
+                p.pp{
+                    color:transparent;
+                }
+
+                p{
+                    color:white;
+                    font-family: timeburnerbold;
+                }
+
+                p.ppppp{
+                    color:gray;
+                    font-family: timeburnerbold;
+                }
+
+                label.up, h1.up{
+                    color: black;
+                    font-family: timeburnerbold;
+                }
