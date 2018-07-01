@@ -1,13 +1,13 @@
 <?php
 include('db.php');
 
-	$ses = $_SESSION['login_user'];//mapapalitan pa to
+	$ses = $_SESSION['login_user'];
 
-	$queryName = "SELECT userOffice from user where userOffice = '$ses' ";//mapapalitan pa to
+	$queryName = "SELECT officeName FROM user LEFT JOIN office ON user.officeID = office.officeID WHERE username = '{$ses}';";
 
-	$nameResult = mysqli_query($queryName);
+	$nameResult = mysqli_query($con, $queryName);
 	$rowName = mysqli_fetch_array($nameResult);
-	$offName = $rowName['userOffice']; //mapapalitan pa to
+	$offName = $rowName['officeName'];
 
 	echo $offName;
 ?>

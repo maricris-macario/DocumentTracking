@@ -1,6 +1,6 @@
-<?php $pagename = "Not yet Returned" ?>
-<?php include ('head.php')?>
-<?php include ('db.php')?>
+<?php $pagename = "Not yet Received"; ?>
+<?php include ('head.php'); ?>
+<?php include ('db.php'); ?>
 
 <body class="animsition">
     <?php include ('navbar.php'); ?>  
@@ -11,7 +11,7 @@
             <?php include ('header.php'); ?>
             <!-- MAIN CONTENT-->
             <?php 
-                $queryNyrSlip = "SELECT * FROM slip LEFT JOIN priority on slip.priorityID = priority.priorityID LEFT JOIN type on slip.typeID = type.typeID LEFT JOIN office on slip.officeID = office.officeID";
+                $queryNyrSlip = "SELECT routingID, slip.officeID AS originatingOffice, routing.officeID AS receivingOffice, dateIn, dateOut, status, priorityNum, prioritylvl, documentNum, docType, subject, details, date AS slipDate, officeName, location FROM routing LEFT JOIN slip ON routing.slipID = slip.slipID JOIN office ON office.officeID = slip.officeID JOIN type ON slip.typeID = type.typeID WHERE status='Not Yet Recorded' ORDER BY slipDate DESC;";
                 $getNyrSlip = mysqli_query($con, $queryNyrSlip);
 
             ?>
@@ -21,7 +21,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="overview-wrap">
-                                    <h2 class="title-1">Not Yet Returned</h2>
+                                    <h2 class="title-1">Not Yet Received</h2>
                                 </div>
                             </div>
                         </div>
@@ -49,23 +49,27 @@
                                                     while ($slip = mysqli_fetch_assoc($getNyrSlip)) {
                                                 ?>
                                                 <tr>
-                                                    <td><?php echo $slip['date']; ?></td>
+                                                    <td><?php echo $slip['slipDate']; ?></td>
                                                     <td><?php echo $slip['officeName']; ?></td>
                                                     <td><?php echo $slip['documentNum']; ?></td>
                                                     <td><?php echo $slip['subject']; ?></td>
                                                     <td><?php echo $slip['docType']; ?></td>
-                                                    <td><?php echo $slip['priorityLvl']; ?></td>
+                                                    <td><?php echo $slip['prioritylvl']; ?></td>
                                                     <td>
                                                     <div class="table-data-feature"-->
-                                                        <button class="item" data-toggle="modal" data-target="#editDet">
+                                                        <!--<button class="item" data-toggle="modal" data-target="#editDet">
                                                             <i class="zmdi zmdi-edit"></i>
-                                                        </button>
-                                                        <button class="item" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                        </button>-->
+                                                        <!--<button class="item" data-toggle="tooltip" data-placement="top" title="Delete">
                                                             <i class="zmdi zmdi-delete"></i>
-                                                        </button>
-                                                        <button class="item" data-toggle="modal" data-target="#moreDet">
-                                                            <i class="zmdi zmdi-more"></i>
-                                                        </button>
+                                                        </button>-->
+                                                        <form action="routingSlipInf.php" method="post">
+                                                         <input type="text" value="<?php echo $slip['routingID']; ?>" name="routingID" hidden>
+                                                         <button name="routingID" class="item" type="submit" value="<?php echo $slip['routingID']; ?>" data-toggle="tooltip" title="More Info"><i class="zmdi zmdi-more"></i></button>
+                                                      </form>
+                                                      <form action="user-queries.php" method="post">
+                                                         <button name="markIn" class="item" type="submit" value="<?php echo $slip['routingID']; ?>" data-toggle="tooltip" title="Mark As 'In'"><i class="zmdi zmdi-assignment-returned"></i></button>
+                                                      </form>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -81,13 +85,6 @@
                 </div>
             </div>
             <!-- END MAIN CONTENT-->
-
-
-            <!--MODAL moreDet -->
-            <div id="moreDet" class="modal fade" role="dialog">
-                <?php include('moredetails.php'); ?>
-            </div>
-            <!-- END OF MODAL -->
 
             <!-- MODAL editDet -->
             <div id="editDet" class="modal fade" role="dialog">

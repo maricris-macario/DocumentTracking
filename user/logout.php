@@ -1,10 +1,8 @@
 <?php
-
-//include('dbconnect.php');
-
+include('dbconnect.php');
 session_start();
-
-if(session_destroy()){
-	header("location:userlogin.php");
-}
+$_SESSION = array();
+session_destroy();
+header("location: ../index.php");
+exit;
 ?>

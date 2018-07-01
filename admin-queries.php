@@ -87,7 +87,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		}
 		if (isset($_POST['user_office'])) {
 			$tbl_offcname = $_POST['user_office'];
-			//$updateUser = "";
 		}
 		if (isset($_POST['u_status'])) {
 			$tbl_status = $_POST['u_status'];

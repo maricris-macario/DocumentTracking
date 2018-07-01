@@ -82,7 +82,7 @@
 		$(function () {
 			$('#logstable').DataTable({ 
 				dom: 'Bfrtip', 
-				buttons: [ 'print', 'pdf' ] //////////// PDF TO BE FIXED ///////////////
+				buttons: [ 'pdf' ]
 			})
 		});
 	</script>

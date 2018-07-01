@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -40,7 +41,15 @@
     <!-- DataTable -->
     <link rel="stylesheet" type="text/css" href="datatables/DataTables-1.10.16/css/jquery.dataTables.css">
     <script type="text/javascript" src="datatables/DataTables-1.10.16/js/jquery.dataTables.js"></script>
-    <!--<link rel="stylesheet" type="text/css" href="datatables/datatables.min.css"/>
-    <script type="text/javascript" src="datatables/datatables.min.js"></script>-->
     
+    <!-- Buttons (DataTables plugin) -->
+    <link rel="stylesheet" type="text/css" href="Buttons-1.5.2/css/buttons.dataTables.css">
+    <script type="text/javascript" src="Buttons-1.5.2/js/buttons.bootstrap.min.js"></script>
+    <script type="text/javascript" src="Buttons-1.5.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="Buttons-1.5.2/js/buttons.flash.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script><!---->
+    <script type="text/javascript" src="Buttons-1.5.2/js/buttons.print.min.js"></script>
+    <script type="text/javascript" src="Buttons-1.5.2/js/buttons.html5.js"></script>
+    <script type="text/javascript" src="pdfmake-master/build/pdfmake.min.js"></script>
+    <script type="text/javascript" src="pdfmake-master/build/vfs_fonts.js"></script>
 </head>
