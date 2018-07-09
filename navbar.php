@@ -47,6 +47,10 @@
                             <a href="cancelled.php">
                                 <i class="fas fa-exclamation"></i>Cancelled</a>
                         </li>
+                        <li>
+                            <a href="resubmitted.php">
+                                <i class="fa fa-rev"></i>Resubmitted</a>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -91,6 +95,10 @@
                         <li>
                             <a href="cancelled.php">
                                 <i class="fas fa-exclamation"></i>Cancelled</a>
+                        </li>
+                        <li>
+                            <a href="resubmitted.php">
+                                <i class="fas fa-sync-alt"></i>Resubmitted</a>
                         </li>
                     </ul>
                 </nav>

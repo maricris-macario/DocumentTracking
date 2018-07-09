@@ -1,7 +1,18 @@
-<?php $pagename = "OUT" ?>
- <script type="text/javascript" src="js/timeDate.js"></script>
- <?php include ('head.php')?>
- <?php include ('db.php')?>
+<?php 
+$pagename = "OUT";
+include ('head.php');
+include ('db.php');
+if (isset($_SESSION['loggedIn'])) {
+  if ($_SESSION['loggedIn'] === 'FALSE' || empty($_SESSION['loggedIn'])) {
+    echo "<script type='text/javascript'>alert('Login required.'); window.location.href='index.php';</script>";
+    //echo print_r($_SESSION['loggedIn']);
+    //header("location: index.php");
+  }
+  
+} else {
+  echo "<script type='text/javascript'>alert('Login required.'); window.location.href='index.php';</script>";
+}
+?>
 
  <body class="animsition">
   <?php include ('navbar.php'); ?>  
@@ -12,9 +23,10 @@
    <?php include ('header.php'); ?>
    <!-- MAIN CONTENT-->
    <?php 
-   $queryOutSlip = "SELECT routingID, slip.officeID AS originatingOffice, routing.officeID AS receivingOffice, dateIn, dateOut, status, priorityNum, prioritylvl, documentNum, docType, subject, details, date AS slipDate, officeName, location FROM routing LEFT JOIN slip ON routing.slipID = slip.slipID JOIN office ON office.officeID = slip.officeID JOIN type ON slip.typeID = type.typeID WHERE status='Out' ORDER BY slipDate DESC;";
+   $ol_userID = $_SESSION['userID'];
+   //$queryOutSlip = "SELECT routingID, slip.officeID AS originatingOffice, routing.officeID AS receivingOffice, dateIn, dateOut, status, priorityNum, prioritylvl, documentNum, docType, subject, details, date AS slipDate, officeName, location FROM routing LEFT JOIN slip ON routing.slipID = slip.slipID JOIN office ON office.officeID = slip.officeID JOIN type ON slip.typeID = type.typeID WHERE status='Out' ORDER BY slipDate DESC;";
+   $queryOutSlip = "SELECT routing.slipID, routingID, slip.officeID AS originatingOffice, routing.officeID AS receivingOffice, dateIn, dateOut, routing.status, priorityNum, prioritylvl, documentNum, docType, subject, details, dateCreated, officeName, location, userID FROM routing LEFT JOIN slip ON routing.slipID = slip.slipID JOIN office ON office.officeID = routing.officeID JOIN type ON slip.typeID = type.typeID WHERE routing.status = 'Out' AND userID = '{$ol_userID}' ORDER BY dateCreated DESC;";
    $getOutSlip = mysqli_query($con, $queryOutSlip);
-
    ?>
    <div class="main-content">
     <div class="section__content section__content--p30">
@@ -30,15 +42,12 @@
  <div class="col-sm-12 col-lg">
   <div class="row">
    <div class="table table-responsive table-data2">
-    <table class="table table-bordered table-condensed  text-center" id="Outslip">
+    <table class="table table-bordered table-condensed text-center" id="Outslip">
      <thead>
       <th>Date Out</th>
-      <th>Sender</th>
-      <!-- <th>Next Destination</th> -->
+      <th>Recipient</th>
       <th>Document Number</th>
       <th>Priority Number</th>
-      <!--<th>Receiving Office</th>
-      <th>Approving Office</th>-->
       <th>Action</th>
    </thead>
    <tbody>
@@ -59,14 +68,20 @@
                   <input type="text" value="<?php echo $slip['routingID']; ?>" name="routingID" hidden>
                   <button name="routingID" class="item" type="submit" value="<?php echo $s['routingID']; ?>" data-toggle="tooltip" title="More Info"><i class="zmdi zmdi-more"></i></button>
                </form>
-               <form action="forwardOtherOffc.php" method="post">
-                  <button name="routingID" class="item" type="submit" value="<?php echo $s['routingID']; ?>" data-toggle="tooltip" title="Send to Another Office"><i class="zmdi zmdi-mail-send"></i></button>
+               <form action="user-queries.php" method="post">
+                  <input type="text" name="can_slipID" value="<?php echo $s['slipID']; ?>" hidden>
+                  <input type="text" name="can_recvOffc" value="<?php echo $s['receivingOffice']; ?>" hidden>
+                  <input type="text" name="" value="<?php echo $s['priorityNum']; ?>" hidden>
+                 <button name="out_cancelSlp" class="item" type="submit" value="<?php echo $s['routingID']; ?>" data-toggle="tooltip" title="Cancel Slip"><i class="fa fa-times"></i></button>
                </form>
             </div>
          </td>
       </tr>
    <?php }
-         }?>
+      } else {
+        echo mysqli_error($con);
+      }
+    ?>
       </tbody>
    </table>
 </div>
@@ -78,7 +93,6 @@
 </div>
 <!-- END MAIN CONTENT-->
 
-<!--MODAL moreDet -->
 <div id="forward" class="modal fade" role="dialog">
  <?php include('forwardOtherOffc.php'); ?>
 </div>
@@ -100,6 +114,9 @@
 <!-- Bootstrap JS-->
 <script src="vendor/bootstrap-4.1/popper.min.js"></script>
 <script src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
+
+ <script type="text/javascript" src="js/timeDate.js"></script>
+
 <!-- Vendor JS       -->
 <script src="vendor/slick/slick.min.js">
 </script>

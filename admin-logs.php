@@ -1,11 +1,20 @@
-<!DOCTYPE html>
-<html>
 <?php 
-	$pagename = 'Logs';
+$pagename = 'Logs'; 
+	//echo $_SERVER['DOCUMENT_ROOT']; 
 	//include($_SERVER['DOCUMENT_ROOT'] . '/pma_all/head.php'); 
-    //include($_SERVER['DOCUMENT_ROOT'] . '/pma_all/admindbconnect.php');
-    include ('head.php');
-    include ('admindbconnect.php');
+	//include($_SERVER['DOCUMENT_ROOT'] . '/pma_all/admindbconnect.php');
+include ('head.php');
+include ('db.php');
+if (isset($_SESSION['loggedIn'])) {
+	if ($_SESSION['loggedIn'] === 'FALSE' || empty($_SESSION['loggedIn'])) {
+		echo "<script type='text/javascript'>alert('Login required.'); window.location.href='index.php';</script>";
+		//echo print_r($_SESSION['loggedIn']);
+		//header("location: index.php");
+	}
+	
+} else {
+	echo "<script type='text/javascript'>alert('Login required.'); window.location.href='index.php';</script>";
+}
 ?>
 
 <style type="text/css">
@@ -14,15 +23,18 @@
 	overflow-x: auto;
 	overflow-y: auto;
 }
+html, body {
+	width: 100%;
+	overflow-x: hidden;
+}
 </style>
 <body>
-	
 	<!-- navbar -->
 	<?php include 'admin-navbar.php'; ?>
 	<div class="container">
 		<?php
 			$queryLogs = "SELECT routingID, routing.slipID, dateIn, dateOut, slip.officeID AS 'originatingOffice', routing.officeID AS 'receivingOffice', documentNum, subject, priorityNum, status FROM slip LEFT JOIN routing ON slip.slipID = routing.slipID;";
-			$getLogs = mysqli_query($connection, $queryLogs);
+			$getLogs = mysqli_query($con, $queryLogs);
 		?>
 		<div class="box">
 			<div class="box-header">
@@ -69,26 +81,14 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- required scripts -->
-	<!-- jquery 
-    <script src="jquery/dist/jquery.js"></script>-->
-    <!--<script src="jquery/dist/jquery.min.js"></script>-->
-    <!-- bootstrap 
-    <script type="text/javascript" src=js/bootstrap.min.js"></script>-->
-    <!-- datatables 
-    <script type="text/javascript" src="datatables/DataTables-1.10.16/js/jquery.dataTables.js"></script>-->
 	<script>
 		$(function () {
-			$('#logstable').DataTable({ 
+			$('#logstable').DataTable({
 				dom: 'Bfrtip', 
 				buttons: [ 'pdf' ]
 			})
 		});
 	</script>
 </body>
-	<?php 
-	//include($_SERVER['DOCUMENT_ROOT'] . '/pma_all/footer.php');
-	include ('footer.php'); 
-	?>
+	<?php include ('footer.php'); ?>
 </html>

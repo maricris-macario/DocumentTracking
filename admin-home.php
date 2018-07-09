@@ -1,32 +1,23 @@
-<!DOCTYPE html>
-<html>
 <?php 
 $pagename = 'Home'; 
 	//echo $_SERVER['DOCUMENT_ROOT']; 
 	//include($_SERVER['DOCUMENT_ROOT'] . '/pma_all/head.php'); 
 	//include($_SERVER['DOCUMENT_ROOT'] . '/pma_all/admindbconnect.php');
 include ('head.php');
-include ('admindbconnect.php');
+include ('db.php');
+if (isset($_SESSION['loggedIn'])) {
+	if ($_SESSION['loggedIn'] === 'FALSE' || empty($_SESSION['loggedIn'])) {
+		echo "<script type='text/javascript'>alert('Login required.'); window.location.href='index.php';</script>";
+		//echo print_r($_SESSION['loggedIn']);
+		//header("location: index.php");
+	}
+	
+} else {
+	echo "<script type='text/javascript'>alert('Login required.'); window.location.href='index.php';</script>";
+}
 ?>
 
-<style type="text/css">
-#welcome {
-	color: #556b2f; 
-	font-family: StencilCargoArmy; 
-	src: url('fonts/StencilCargoArmy.ttf');
-	font-size: 5em;
-}
-
-@font-face{
-	font-family: StencilCargoArmy;
-	src: url('fonts/StencilCargoArmy.ttf');
-}
-
-@font-face{
-	font-family: timeburnerbold;
-	src: url('fonts/timeburnerbold.ttf');
-}
-
+<style type="text/css"> 
 textarea {
 	overflow: auto;
 	resize: vertical;
@@ -44,61 +35,26 @@ form > .form-group > textarea {
 	background-color: #f5f5f5;
 }
 .box {
-	padding: 1.2em;
 	overflow-x: auto;
 	overflow-y: auto;
+	padding: 1.2em;
 }
-
 .navbar {
 	margin-bottom: 0px; 
 }
-
-.carousel {
-	margin-bottom: 5em;
-}
-
-.carousel,
-.item,
-.active {
-	height: 100%;
-}
-
-.carousel-inner {
-	height: 100%;
-}
-
-.carousel-inner > .item > img {
-	min-width: 100%;
-	height: 92vh;
-	overflow: hidden;
-}
-
-.carousel-inner > .item > .carousel-caption {
-	padding-top: 30vh;
-	padding-bottom: 30vh;
-}
-
 .btn-outline {
 	background-color: transparent;
 	color: inherit;
 	transition: all .5s;
 }
-
 .btn-success.btn-outline {
 	color: black;
 }
-
 .btn-success.btn-outline:hover {
 	color: #fffaf0;
 }
 th {
 	text-align: center;
-}
-.carousel-caption > .row > .col-md-3 > h4 {
-	font-family: timeburnerbold; 
-	src: url('fonts/timeburnerbold.ttf');
-	font-size: 2em;
-	color: #ffffe0;
 }
 input[type="text"] {
 	border: none;
@@ -112,65 +68,28 @@ form > .form-group > input[type="password"] {
 	border-radius: 30px;
 	background-color: #f5f5f5;
 }
+.btn-group-vertical {
+	float: right;
+	position: -webkit-sticky;
+	position: sticky;
+	bottom: 0;
+	box-shadow: 7px 7px 15px #778899;
+	opacity: 0.3;
+}
+.btn-group-vertical:hover {
+	opacity: 1;
+}
 </style>
 
 <body>
 	<!-- navbar -->
 	<?php include 'admin-navbar.php' ?>
-
-	<!--<div id="carousel" class="carousel slide" data-ride="carousel">
-		<ol class="carousel-indicators">
-			<li data-target="#carousel" data-slide-to="0" class="active"></li>
-			<li data-target="#carousel" data-slide-to="1"></li>
-		</ol>
-
-		<div class="carousel-inner">
-			<div class="item active">
-				<img src="img/pma-bldg.jpg">
-				<div class="carousel-caption">
-					<h1 id="welcome">Welcome to PMA's Document Tracking System</h1>
-				</div>
-			</div>
-			<div class="item">
-				<img src="img/pma.jpg">
-				<div class="carousel-caption">
-					<div class="row">
-						<div class="col-md-3">
-							<h4>View and Add Users</h4>
-							<a class="btn btn-lg btn-success btn-outline" href="#users"> Go <i class="glyphicon glyphicon-hand-right"></i></a>
-						</div>
-						<div class="col-md-3">
-							<h4>View and Add Offices</h4>
-							<a class="btn btn-lg btn-success btn-outline" href="#office"> Go <i class="glyphicon glyphicon-hand-right"></i></a>
-						</div>
-						<div class="col-md-3">
-							<h4>View and Add Document Types</h4>
-							<a class="btn btn-lg btn-success btn-outline" href="#doctype"> Go <i class="glyphicon glyphicon-hand-right"></i></a>
-						</div>
-						<div class="col-md-3">
-							<h4>View Logs</h4>
-							<a class="btn btn-lg btn-success btn-outline" href="admin-logs.php"> Go <i class="glyphicon glyphicon-hand-right"></i></a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<a class="left carousel-control" href="#carousel" data-slide="prev">
-			<span class="icon-prev"></span>
-			<span class="sr-only">Previous</span>
-		</a>
-		<a class="right carousel-control" href="#carousel" data-slide="next">
-			<span class="icon-next"></span>
-			<span class="sr-only">Next</span>
-		</a>
-	</div>-->
-
+	<!-- main content -->
 	<div class="container">
 		<!-- users -->
 		<?php
 		$queryUsers = "SELECT completeName, username, officeName, status , userLevel, user.userID, user.officeID FROM user LEFT JOIN office ON office.officeID = user.officeID";
-		$getUsers = mysqli_query($connection, $queryUsers);
+		$getUsers = mysqli_query($con, $queryUsers);
 		?>
 		<div class="row">
 			<div class="col-md-12">
@@ -212,7 +131,7 @@ form > .form-group > input[type="password"] {
 														<option value="<?php echo $u['officeID']; ?>" selected="selected" disabled><?php echo $u['officeName']; ?></option> 
 														<?php
 														$queryOffices = "select * from office";
-														$getOffices = mysqli_query($connection, $queryOffices);
+														$getOffices = mysqli_query($con, $queryOffices);
 														if (mysqli_num_rows($getOffices) > 0) {
 															while ($office = mysqli_fetch_assoc($getOffices)) { ?>
 																<option value="<?php echo $office['officeID'] ?>"><?php echo $office['officeName']; ?></option>
@@ -241,7 +160,7 @@ form > .form-group > input[type="password"] {
 													<!--<input type="text" name="update_user" value="<?php //echo $u['userID'] ?>" hidden>-->
 													<div class="row">
 														<div class="col-md-12">
-															<button value="<?php echo $u['userID'] ?>" type="submit" title="Update" class="btn btn-sm btn-outline-dark btn-block" name="update_user"><span><i class="glyphicon glyphicon-edit"></i> Edit</span></button>
+															<button data-toggle="tooltip" value="<?php echo $u['userID'] ?>" type="submit" title="Update" class="btn btn-sm btn-outline-dark btn-block" name="update_user"><span><i class="glyphicon glyphicon-edit"></i> Edit</span></button>
 														</div>
 													</div>  
 												</td>
@@ -262,7 +181,7 @@ form > .form-group > input[type="password"] {
 		<!-- office -->
 		<?php 
 		$queryOffice = "SELECT * FROM office";
-		$getOffices = mysqli_query($connection, $queryOffice);
+		$getOffices = mysqli_query($con, $queryOffice);
 		?>
 		<div class="row">
 			<div class="col-md-9"> 
@@ -306,7 +225,7 @@ form > .form-group > input[type="password"] {
 													<div class="row">
 														<div class="col-md-12">
 															<!--<button data-toggle="modal" data-target="#updtOffice" title="Update" class="btn btn-sm btn-default btn-block"><span><i class="glyphicon glyphicon-edit"></i></span></button>-->
-															<button title="Update" name="update_office" class="btn btn-sm btn-outline-dark btn-block" value="<?php echo $o['officeID'] ?>"><span><i class="glyphicon glyphicon-edit"></i> Edit</span></button>
+															<button data-toggle="tooltip" title="Update" name="update_office" class="btn btn-sm btn-outline-dark btn-block" value="<?php echo $o['officeID'] ?>"><span><i class="glyphicon glyphicon-edit"></i> Edit</span></button>
 														</div>
 													</div>
 												</td>
@@ -328,7 +247,7 @@ form > .form-group > input[type="password"] {
 			<!-- document type -->
 			<?php
 			$docTypeQuery = "SELECT * FROM type";
-			$getDocType = mysqli_query($connection, $docTypeQuery);
+			$getDocType = mysqli_query($con, $docTypeQuery);
 			?>
 			<div class="col-md-3">
 				<div class="box" id="doctype">
@@ -400,7 +319,7 @@ form > .form-group > input[type="password"] {
 									<option selected disabled value="">Select</option> 
 									<?php
 									$queryOffices = "select * from office";
-									$getOffices = mysqli_query($connection, $queryOffices);
+									$getOffices = mysqli_query($con, $queryOffices);
 									if (mysqli_num_rows($getOffices) > 0) {
 										while ($office = mysqli_fetch_assoc($getOffices)) { ?>
 											<option value="<?php echo $office['officeID']; ?>"><?php echo $office['officeName']; ?></option>
@@ -487,25 +406,29 @@ form > .form-group > input[type="password"] {
 				</div>
 			</div>
 		</div>
+
+		<!-- sticky buttons -->
+		<div class="btn-group-vertical">
+			<a class="btn btn-outline-info btn-md btn-float" href="#users" data-toggle="tooltip" title="View and Add Users"><i class="fa fa-users"></i></a>
+			<a class="btn btn-outline-info btn-md btn-float" href="#office" data-toggle="tooltip" title="View and Add Offices"><i class="fa fa-briefcase"></i></a>
+			<a class="btn btn-outline-info btn-md btn-float" href="#doctype" data-toggle="tooltip" title="View and Add Document Types"><i class="fa fa-file-alt"></i></a>
+			<a href="#" class="btn btn-outline-info btn-md btn-float" data-toggle="tooltip" title="Back to Top"><i class="fa fa-arrow-circle-up"></i></a>
+		</div>
+		
 	</div>
-	<!-- required scripts -->
-	<!-- jquery 
-		<script src="jquery/dist/jquery.js"></script> -->
-		<!--<script src="jquery/dist/jquery.min.js"></script>-->
-	<!-- bootstrap 
-		<script type="text/javascript" src="js/bootstrap.min.js"></script> -->
-	<!-- datatables 
-		<script type="text/javascript" src="datatables/DataTables-1.10.16/js/jquery.dataTables.js"></script> -->
-		<script>
-			$(function () {
-				$('#usertable').DataTable()
-				$('#officestable').DataTable()
-				$('#doctypetable').DataTable()
-			}); 
-		</script>
-	</body>
-	<?php 
+	<script>
+		$(function () {
+			$('#usertable').DataTable()
+			$('#officestable').DataTable()
+			$('#doctypetable').DataTable()
+		}); 
+		$(function () {
+			$('[data-toggle="tooltip"]').tooltip()
+		})
+	</script>
+</body>
+<?php 
 	//include($_SERVER['DOCUMENT_ROOT'] . '/pma_all/footer.php');
-	include ('footer.php'); 
-	?>
-	</html>
+include ('footer.php'); 
+?>
+</html>

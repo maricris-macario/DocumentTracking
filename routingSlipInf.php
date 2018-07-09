@@ -1,6 +1,19 @@
-<?php $pagename = "Slip Info" ?>
-<?php include ('head.php')?>
-<?php include ('db.php')?>
+<?php 
+$pagename = "Slip Info";
+include ('head.php');
+include ('db.php');
+if (isset($_SESSION['loggedIn'])) {
+	if ($_SESSION['loggedIn'] === 'FALSE' || empty($_SESSION['loggedIn'])) {
+		echo "<script type='text/javascript'>alert('Login required.'); window.location.href='index.php';</script>";
+		//echo print_r($_SESSION['loggedIn']);
+		//header("location: index.php");
+	}
+	
+} else {
+	echo "<script type='text/javascript'>alert('Login required.'); window.location.href='index.php';</script>";
+}
+?>
+
 <style type="text/css">
 	input[type=text] {
 		border: none;

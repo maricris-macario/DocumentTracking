@@ -1,6 +1,6 @@
 <?php
 //include($_SERVER['DOCUMENT_ROOT'] . '/pma_all/admindbconnect.php');
-include ('admindbconnect.php');
+include ('db.php');
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		// add new user
 	if (isset($_POST['user_cname'])) {
@@ -31,11 +31,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		//mysqli_query($connection, $insertUser);
 		//$new_usr_id = mysqli_insert_id($connection);
 		//$insertUserOffice = "insert into office_user (userID, officeID) values ('{$new_usr_id}', '{$user_officeID}');";
-		if (mysqli_query($connection, $insertUser)) {
+		if (mysqli_query($con, $insertUser)) {
 			header("location: admin-home.php#users");
 			exit();
 		} else {
-			echo mysqli_error($connection);
+			echo mysqli_error($con);
 			exit();
 		}
 	}
@@ -52,11 +52,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 	if (isset($_POST['submitNewOffice'])) {
 		$insertOffice = "insert into office (officeName, description, location) values ('{$oname}', '{$office_desc}', '{$office_location}');";
-		if (mysqli_query($connection, $insertOffice)) {
+		if (mysqli_query($con, $insertOffice)) {
 			header("location: admin-home.php#office");
 			exit();
 		} else {
-			echo mysqli_error($connection);
+			echo mysqli_error($con);
 			exit();
 		}
 	}
@@ -67,11 +67,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 	if (isset($_POST['submitNewDocType'])) {
 		$insertDocType = "insert into type (docType) values ('{$docType}');";
-		if (mysqli_query($connection, $insertDocType)) {
+		if (mysqli_query($con, $insertDocType)) {
 			header("location: admin-home.php#doctype");
 			exit();
 		} else {
-			echo mysqli_error($connection);
+			echo mysqli_error($con);
 			exit();
 		}
 	}
@@ -95,11 +95,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			$tbl_usrlvl = $_POST['u_lvl'];
 		}
 		$updateUser = "UPDATE user SET completeName = '{$tbl_cname}', username = '{$tbl_uname}', status = '{$tbl_status}', userLevel = '{$tbl_usrlvl}', officeID = '{$tbl_offcname}' WHERE userID = '{$userid}';";
-		if (mysqli_query($connection, $updateUser)) {
+		if (mysqli_query($con, $updateUser)) {
 			header("location: admin-home.php#users");
 			die();
 		} else {
-			echo mysqli_error($connection);
+			echo mysqli_error($con);
 			die();
 		}
 	}
@@ -117,11 +117,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			$officeLoc = $_POST['officeLoc'];
 		}
 		$updateOffice = "UPDATE office SET officeName = '{$office_name}', description = '{$officeDesc}', location = '{$officeLoc}' WHERE officeID = {$officeid};";
-		if (mysqli_query($connection, $updateOffice)) {
+		if (mysqli_query($con, $updateOffice)) {
 			header("location: admin-home.php#office");
 			die();
 		} else {
-			echo mysqli_error($connection);
+			echo mysqli_error($con);
 			die();
 		}
 	}

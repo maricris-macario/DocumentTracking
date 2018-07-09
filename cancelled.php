@@ -1,6 +1,14 @@
-<?php $pagename = "Cancelled" ?>
-<?php include ('head.php')?>
-<?php include ('db.php')?>
+<?php $pagename = "Cancelled";
+include ('head.php');
+include ('db.php');
+if (isset($_SESSION['loggedIn'])) {
+	if ($_SESSION['loggedIn'] === 'FALSE' || empty($_SESSION['loggedIn'])) {
+		echo "<script type='text/javascript'>alert('Login required.'); window.location.href='index.php';</script>";
+	}	
+} else {
+	echo "<script type='text/javascript'>alert('Login required.'); window.location.href='index.php';</script>";
+}
+?>
 
 <body class="animsition">
 	<?php include ('navbar.php'); ?>  
@@ -11,8 +19,10 @@
 		<?php include ('header.php'); ?>
 		<!-- MAIN CONTENT-->
 		<?php 
-		//$queryCanSlip = "SELECT * FROM slip LEFT JOIN type on slip.typeID = type.typeID LEFT JOIN office on slip.officeID = office.officeID";
-		$queryCanSlip = "SELECT routingID, slip.officeID AS originatingOffice, routing.officeID AS receivingOffice, dateIn, dateOut, status, priorityNum, prioritylvl, documentNum, docType, subject, details, date AS slipDate, officeName, location FROM routing LEFT JOIN slip ON routing.slipID = slip.slipID JOIN office ON office.officeID = slip.officeID JOIN type ON slip.typeID = type.typeID WHERE status='Cancelled' ORDER BY slipDate DESC;";
+		$ol_userID = $_SESSION['userID'];
+		//$queryCanSlip = "SELECT routingID, slip.officeID AS originatingOffice, routing.officeID AS receivingOffice, dateIn, dateOut, status, priorityNum, prioritylvl, documentNum, docType, subject, details, date AS slipDate, officeName, location FROM routing LEFT JOIN slip ON routing.slipID = slip.slipID JOIN office ON office.officeID = slip.officeID JOIN type ON slip.typeID = type.typeID WHERE status='Cancelled' ORDER BY slipDate DESC;";
+/////////// CANCELLED SLIPS OR CANCELLED BY RECEIVING OFFICE??? ///////////
+		$queryCanSlip = "SELECT routing.slipID, routingID, slip.officeID AS originatingOffice, routing.officeID AS receivingOffice, dateIn, dateOut, routing.status, priorityNum, prioritylvl, documentNum, docType, subject, details, dateCreated, officeName, location, userID FROM routing LEFT JOIN slip ON routing.slipID = slip.slipID JOIN office ON office.officeID = slip.officeID JOIN type ON slip.typeID = type.typeID WHERE routing.status = 'Cancelled' AND userID = '{$ol_userID}' ORDER BY dateCreated DESC;";
 		$getCanSlip = mysqli_query($con, $queryCanSlip);
 
 		?>
@@ -40,24 +50,22 @@
 											<th>Subject</th>
 											<th>Doctype</th>
 											<th>Priority</th>
-											<!--<th>Receiving Office</th>
-												<th>Approving Office</th>-->
-												<th>Action</th>
-											</thead>
-											<tbody>
-												<?php 
-												if(mysqli_num_rows($getCanSlip) > 0){
-													while ($slip = mysqli_fetch_assoc($getCanSlip)) {
-														?>
-														<tr>
-															<td><?php echo $slip['slipDate']; ?></td>
-															<td><?php echo $slip['officeName']; ?></td>
-															<td><?php echo $slip['documentNum']; ?></td>
-															<td><?php echo $slip['subject']; ?></td>
-															<td><?php echo $slip['docType']; ?></td>
-															<td><?php echo $slip['prioritylvl']; ?></td>
-															<td>
-																<div class="table-data-feature">
+											<th>Action</th>
+										</thead>
+										<tbody>
+											<?php 
+											if(mysqli_num_rows($getCanSlip) > 0){
+												while ($slip = mysqli_fetch_assoc($getCanSlip)) {
+													?>
+													<tr>
+														<td><?php echo $slip['dateCreated']; ?></td>
+														<td><?php echo $slip['officeName']; ?></td>
+														<td><?php echo $slip['documentNum']; ?></td>
+														<td><?php echo $slip['subject']; ?></td>
+														<td><?php echo $slip['docType']; ?></td>
+														<td><?php echo $slip['prioritylvl']; ?></td>
+														<td>
+															<div class="table-data-feature">
 																	<!--<button class="item" data-toggle="modal" data-target="#editDet"><i class="zmdi zmdi-edit"></i></button>
 																		<button class="item" data-toggle="tooltip" title="Delete"><i class="zmdi zmdi-delete"></i></button>-->
 																		<form action="routingSlipInf.php" method="post">
@@ -65,13 +73,19 @@
 																			<button name="routingID" class="item" type="submit" value="<?php echo $slip['routingID']; ?>" data-toggle="tooltip" title="More Info"><i class="zmdi zmdi-more"></i></button>
 																		</form>
 																		<form action="user-queries.php" method="post">
+																			<input type="text" name="resub_canSlip" value="<?php echo $slip['slipID']; ?>" hidden>
+																			<input type="text" name="resub_canPriNum" value="<?php echo $slip['priorityNum']; ?>" hidden>
+																			<input type="text" name="resub_recvOffc" value="<?php echo $slip['receivingOffice']; ?>" hidden>
 																			<button class="item" type="submit" name="reactivate" value="<?php echo $slip['routingID']; ?>" data-toggle="tooltip" title="Resubmit"><i class="zmdi zmdi-badge-check"></i></button>
 																		</form>
 																	</div>
 																</td>
 															</tr>
 														<?php }
-													}?>
+													} else {
+														echo mysqli_error($con);
+													}
+													?>
 												</tbody>
 											</table>
 										</div>

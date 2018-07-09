@@ -9,7 +9,7 @@
 		</ul>
 		<ul class="nav navbar-nav"> 
 			<li class="nav-item">
-				<a href="admin/logout.php" class="nav-link"><i class="glyphicon glyphicon-log-out"></i> Logout </a>
+				<a href="logout.php" class="nav-link"><i class="glyphicon glyphicon-log-out"></i> Logout </a>
 			</li>
 		</ul>
 	</div>

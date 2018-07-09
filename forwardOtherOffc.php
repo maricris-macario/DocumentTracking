@@ -1,6 +1,18 @@
-<?php $pagename = "Send" ?>
-<?php include ('head.php')?>
-<?php include ('db.php')?>
+<?php 
+$pagename = "Send";
+include ('head.php');
+include ('db.php');
+if (isset($_SESSION['loggedIn'])) {
+  if ($_SESSION['loggedIn'] === 'FALSE' || empty($_SESSION['loggedIn'])) {
+    echo "<script type='text/javascript'>alert('Login required.'); window.location.href='index.php';</script>";
+    //echo print_r($_SESSION['loggedIn']);
+    //header("location: index.php");
+  }
+} else {
+  echo "<script type='text/javascript'>alert('Login required.'); window.location.href='index.php';</script>";
+}
+?>
+
 <style type="text/css">
 input[type=text] {
   border: none;
@@ -43,7 +55,7 @@ textarea {
             if (isset($_POST['routingID'])) {
               $routingID = $_POST['routingID'];
 
-              $queryinfo = "SELECT routingID, slip.officeID AS originatingOffice, routing.officeID AS receivingOffice, dateIn, dateOut, status, priorityNum, prioritylvl, documentNum, docType, slip.typeID, subject, details, date AS slipDate, officeName, location FROM routing LEFT JOIN slip ON routing.slipID = slip.slipID JOIN office ON office.officeID = slip.officeID JOIN type ON slip.typeID = type.typeID WHERE routingID = '{$routingID}';";
+              $queryinfo = "SELECT routing.slipID, routingID, slip.officeID AS originatingOffice, routing.officeID AS receivingOffice, dateIn, dateOut, status, priorityNum, prioritylvl, documentNum, docType, slip.typeID, subject, details, dateCreated AS slipDate, officeName, location FROM routing LEFT JOIN slip ON routing.slipID = slip.slipID JOIN office ON office.officeID = slip.officeID JOIN type ON slip.typeID = type.typeID WHERE routingID = '{$routingID}';";
               $getinfo = mysqli_query($con, $queryinfo);
               if (mysqli_num_rows($getinfo) > 0) {
                 while ($info = mysqli_fetch_assoc($getinfo)) { ?>
@@ -69,7 +81,7 @@ textarea {
                         <select name="fwdSlp_docType" class="form-control">
                           <option selected="selected" value="<?php echo $info['typeID']; ?>" disabled><?php echo $info['docType']; ?></option>
                           <?php
-                          $queryDocTypes = "select * from type;";
+                          $queryDocTypes = "SELECT * FROM type;";
                           $getDocTypes = mysqli_query($con, $queryDocTypes);
                           if (mysqli_num_rows($getDocTypes) > 0) {
                             while ($dt = mysqli_fetch_assoc($getDocTypes)) { ?>
@@ -94,12 +106,14 @@ textarea {
                   </div>
                 <?php }
               }
+            } else {
+              echo mysqli_error($con);
             }
             ?>
             <div class="row">
               <div class="col-md-12">
                 <div class="overview-wrap">
-                  <h2 class="title-1">Forward Document to Another Office</h2>
+                  <h2 class="title-1">Send Document to Another Office</h2>
                 </div>
               </div>
             </div>
@@ -114,20 +128,11 @@ textarea {
                   </select>
                 </div>
                 <div class="form-check">
+<!--////////////  PLACE AUTO COMPLETE FORM HERE  /////////////-->
                 <label>Select Office/s:</label>
-                <?php
-                $queryOffices = "select * from office";
-                $getOffices = mysqli_query($con, $queryOffices);
-                if (mysqli_num_rows($getOffices) > 0) {
-                 while ($office = mysqli_fetch_assoc($getOffices)) { ?>
-                  <div class="row">
-                    <label class="form-check-label">
-                      <input type="checkbox" class="form-check-input" name="sendToOffc[]" value="<?php echo $office['officeID']; ?>"><?php echo $office['officeName']; ?>
-                    </label>
-                  </div>
-                <?php   }
-              }
-              ?>
+                <input type="text" name="fwd_officeName" id="autocomplete">
+                <input type="text" name="fwd_officeID" id="selectuser_id">
+                
               <button class="btn btn-outline-success" type="submit" name="forwardToOffc" value="submit">Submit</button>
             </div>
               </div>
@@ -175,6 +180,35 @@ textarea {
 <script src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
 <script src="vendor/chartjs/Chart.bundle.min.js"></script>
 <script src="vendor/select2/select2.min.js">
+</script>
+
+<!-- Script -->
+<script type='text/javascript' >
+  $( function() {
+
+    $( "#autocomplete" ).autocomplete({
+      source: function( request, response ) {
+
+        $.ajax({
+          url: "fetchData.php",
+          type: 'post',
+          dataType: "json",
+          data: {
+            search: request.term
+          },
+          success: function( data ) {
+            response( data );
+          }
+        });
+      },
+      select: function (event, ui) {
+                $('#autocomplete').val(ui.item.label); // display the selected text
+                $('#selectuser_id').val(ui.item.value); // save selected id to input
+                return false;
+              }
+            });
+  });
+
 </script>
 
 <!-- Main JS-->

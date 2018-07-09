@@ -1,7 +1,16 @@
-<?php session_start(); ?>
+<?php 
+include ('db.php');
+session_start(); 
+if (isset($_SESSION['login_user'])) {
+    $username = $_SESSION['login_user']; // username
+    $queryInfo = "SELECT * FROM user WHERE username = '{$username}';";
+    $getInfo = mysqli_query($con, $queryInfo);
+    $info = mysqli_fetch_assoc($getInfo);
+    $_SESSION['userID'] = $info['userID']; // user ID
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <!-- Required meta tags-->
     <meta charset="UTF-8">
@@ -21,8 +30,12 @@
 
     <!-- jquery -->
     <script src="jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="jquery/dist/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="jquery/dist/jquery-ui.min.css">
+    <script type="text/javascript" src="jquery/dist/jquery-ui.min.js"></script>
 
     <!-- Bootstrap CSS-->
+    <script src="vendor/bootstrap-4.1/popper.min.js"></script>
     <link href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
     <script type="text/javascript" src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
 
@@ -47,7 +60,7 @@
     <script type="text/javascript" src="Buttons-1.5.2/js/buttons.bootstrap.min.js"></script>
     <script type="text/javascript" src="Buttons-1.5.2/js/dataTables.buttons.min.js"></script>
     <script type="text/javascript" src="Buttons-1.5.2/js/buttons.flash.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script><!---->
+    <script type="text/javascript" src="jszip/dist/jszip.min.js"></script>
     <script type="text/javascript" src="Buttons-1.5.2/js/buttons.print.min.js"></script>
     <script type="text/javascript" src="Buttons-1.5.2/js/buttons.html5.js"></script>
     <script type="text/javascript" src="pdfmake-master/build/pdfmake.min.js"></script>

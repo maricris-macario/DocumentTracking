@@ -1,6 +1,18 @@
-<?php $pagename = "Approval" ?>
-<?php include ('head.php')?>
-<?php include ('db.php')?>
+<?php 
+$pagename = "Approval";
+include ('head.php');
+include ('db.php');
+if (isset($_SESSION['loggedIn'])) {
+  if ($_SESSION['loggedIn'] === 'FALSE' || empty($_SESSION['loggedIn'])) {
+    echo "<script type='text/javascript'>alert('Login required.'); window.location.href='index.php';</script>";
+    //echo print_r($_SESSION['loggedIn']);
+    //header("location: index.php");
+  }
+  
+} else {
+  echo "<script type='text/javascript'>alert('Login required.'); window.location.href='index.php';</script>";
+}
+?>
 
 <body class="animsition">
   <?php include ('navbar.php'); ?>  
@@ -11,7 +23,9 @@
     <?php include ('header.php'); ?>
     <!-- MAIN CONTENT-->
     <?php 
-    $queryApSlip = "SELECT routingID, slip.officeID AS originatingOffice, routing.officeID AS receivingOffice, dateIn, dateOut, status, priorityNum, prioritylvl, documentNum, docType, subject, details, date AS slipDate, officeName, location FROM routing LEFT JOIN slip ON routing.slipID = slip.slipID JOIN office ON office.officeID = slip.officeID JOIN type ON slip.typeID = type.typeID WHERE status='Approval' ORDER BY slipDate DESC;";
+    $ol_userID = $_SESSION['userID'];
+    //$queryApSlip = "SELECT routingID, slip.officeID AS originatingOffice, routing.officeID AS receivingOffice, dateIn, dateOut, status, priorityNum, prioritylvl, documentNum, docType, subject, details, date AS slipDate, officeName, location FROM routing LEFT JOIN slip ON routing.slipID = slip.slipID JOIN office ON office.officeID = slip.officeID JOIN type ON slip.typeID = type.typeID WHERE status='Approval' ORDER BY slipDate DESC;";
+    $queryApSlip = "SELECT routingID, slip.officeID AS originatingOffice, routing.officeID AS receivingOffice, dateIn, dateOut, routing.status, priorityNum, prioritylvl, documentNum, docType, subject, details, dateCreated, officeName, location, user.userID FROM routing LEFT JOIN slip ON routing.slipID = slip.slipID JOIN office ON office.officeID = slip.officeID JOIN type ON slip.typeID = type.typeID LEFT JOIN user ON routing.officeID = user.officeID WHERE routing.status = 'Approval' AND user.userID = '{$ol_userID}' ORDER BY dateCreated DESC;";
     $getApSlip = mysqli_query($con, $queryApSlip);
 
     ?>
@@ -67,7 +81,10 @@
                               </td>
                             </tr>
                           <?php }
-                        }?>
+                        } else {
+                          echo mysqli_error($con);
+                        }
+                        ?>
                       </tbody>
                     </table>
                   </div>
